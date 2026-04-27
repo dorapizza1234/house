@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: house
+
+  datasource:
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+    username: postgres.vevdhxlrpxaqqfetzrym
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+server:
+  port: 8080
+
+  jwt:
+      secret: ${JWT_SECRET}                
+      access-expiration: 1800000
+      refresh-expiration: 604800000

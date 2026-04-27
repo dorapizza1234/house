@@ -1,0 +1,36 @@
+# Build outputs
+backend/build/
+backend/.gradle/
+backend/bin/
+backend/out/
+
+# IDE - Eclipse / STS
+backend/.classpath
+backend/.project
+backend/.settings/
+
+# IDE - IntelliJ
+backend/.idea/
+backend/*.iml
+
+# Spring Boot
+backend/HELP.md
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+*.env
+
+# Claude Code
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Frontend (미래)
+frontend/node_modules/
+frontend/.next/
