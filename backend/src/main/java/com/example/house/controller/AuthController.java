@@ -1,6 +1,8 @@
  package com.example.house.controller;
 
-  import com.example.house.dto.SignupRequest;
+  import com.example.house.dto.LoginRequest;
+import com.example.house.dto.LoginResponse;
+import com.example.house.dto.SignupRequest;
   import com.example.house.dto.SignupResponse;
   import com.example.house.service.AuthService;
   import jakarta.validation.Valid;
@@ -18,10 +20,19 @@
   public class AuthController {
 
       private final AuthService authService;
-
+       // signup
       @PostMapping("/signup")
       public ResponseEntity<SignupResponse> signup(@Valid @RequestBody SignupRequest request) {
           SignupResponse response = authService.signup(request);
           return ResponseEntity.status(HttpStatus.CREATED).body(response);
       }
+      
+      @PostMapping("/login")
+      public ResponseEntity<LoginResponse>login(@Valid @RequestBody LoginRequest req){
+    	 LoginResponse res=authService.login(req);
+    	 return ResponseEntity.ok(res);
+      }
+      
+      
+      
   }

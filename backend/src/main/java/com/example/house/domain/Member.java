@@ -2,7 +2,9 @@ package com.example.house.domain;
 
   import jakarta.persistence.*;
   import lombok.*;
-  import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
   @Entity
   @Table(name = "개인")
@@ -26,12 +28,16 @@ package com.example.house.domain;
 
       @Column(name = "가입시간")
       private LocalDateTime joinedAt;
-
+      
+      @Column(name= "생년월일")
+      private LocalDate birthDate;
+      
       @Builder
-      public Member(String email, String passwordHash, String nickname) {
+      public Member(String email, String passwordHash, String nickname, LocalDate birthDate) {
           this.email = email;
           this.passwordHash = passwordHash;
           this.nickname = nickname;
+          this.birthDate= birthDate;
           this.joinedAt = LocalDateTime.now();
       }
   }

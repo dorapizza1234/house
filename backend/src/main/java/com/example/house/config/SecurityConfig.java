@@ -20,7 +20,7 @@ package com.example.house.config;
           http
               .csrf(csrf -> csrf.disable())
               .authorizeHttpRequests(auth -> auth
-                  .requestMatchers("/api/auth/**").permitAll()
+                  .requestMatchers("/api/auth/**","/error").permitAll()
                   .anyRequest().authenticated()
               );
           return http.build();

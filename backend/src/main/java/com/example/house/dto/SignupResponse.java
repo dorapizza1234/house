@@ -1,6 +1,8 @@
  package com.example.house.dto;
 
-  public record SignupResponse(
+import java.time.LocalDate;
+
+public record SignupResponse(
       Long memberId,
       String email,
       String nickname
