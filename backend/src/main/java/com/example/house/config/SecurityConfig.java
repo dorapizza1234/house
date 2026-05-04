@@ -8,7 +8,9 @@ package com.example.house.config;
   import org.springframework.security.crypto.password.PasswordEncoder;
   import org.springframework.security.web.SecurityFilterChain;
   import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-  import com.example.house.security.JwtAuthenticationFilter;
+
+import com.example.house.filter.MdcLoggingFilter;
+import com.example.house.security.JwtAuthenticationFilter;
   import lombok.RequiredArgsConstructor;
   
   @Configuration
@@ -16,6 +18,7 @@ package com.example.house.config;
   public class SecurityConfig {
 
 	  private final JwtAuthenticationFilter jwtAuthenticationFilter; 
+	  private final MdcLoggingFilter mdcLoggingFilter;
 	  
       @Bean
       public PasswordEncoder passwordEncoder() {
@@ -32,7 +35,8 @@ package com.example.house.config;
                   .requestMatchers("/api/auth/**","/error").permitAll()
                   .anyRequest().authenticated()
               )
-              .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+              .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+              .addFilterAfter(mdcLoggingFilter, JwtAuthenticationFilter.class);
           return http.build();
       }
   }

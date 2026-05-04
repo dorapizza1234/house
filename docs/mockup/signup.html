@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입 - 집으로</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="screen">
+      <div class="header">
+        <a href="index.html" class="back-btn">←</a>
+        <h2 class="header-title">회원가입</h2>
+      </div>
+
+      <form class="form">
+        <div class="form-group">
+          <label class="label" for="email">이메일</label>
+          <input class="input" id="email" type="email" placeholder="example@email.com">
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="password">비밀번호</label>
+          <input class="input" id="password" type="password" placeholder="영문 대소문자 + 숫자 8자 이상">
+          <span class="helper">영문 대문자, 소문자, 숫자를 모두 포함해서 8자 이상</span>
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="passwordConfirm">비밀번호 확인</label>
+          <input class="input" id="passwordConfirm" type="password" placeholder="한 번 더 입력해주세요">
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="nickname">닉네임</label>
+          <input class="input" id="nickname" type="text" placeholder="가족이 알아볼 이름">
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="birthDate">생년월일</label>
+          <input class="input" id="birthDate" type="date">
+          <span class="helper">생일이 가족 캘린더에 자동으로 표시돼요</span>
+        </div>
+      </form>
+
+      <a href="family-invite.html" class="btn btn-primary">가입하기</a>
+
+      <div class="link-area">
+        <span class="link-text">이미 계정이 있으신가요? </span>
+        <a href="login.html" class="link">로그인</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -18,15 +18,18 @@ import java.util.Date;
       private final SecretKey key;
       private final long accessExpiration;
       private final long refreshExpiration;
+      private final long inviteExpiration;
 
       public JwtUtil(
               @Value("${jwt.secret}") String secret,
               @Value("${jwt.access-expiration}") long accessExpiration,
-              @Value("${jwt.refresh-expiration}") long refreshExpiration
+              @Value("${jwt.refresh-expiration}") long refreshExpiration,
+              @Value("${jwt.invite-expiration}") long inviteExpiration
       ) {
           this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
           this.accessExpiration = accessExpiration;
           this.refreshExpiration = refreshExpiration;
+          this.inviteExpiration = inviteExpiration;
       }
  
   
@@ -72,6 +75,32 @@ import java.util.Date;
           return false;
       }
   }
+  
+  public String generateInviteToken(Long familyId) {
+      Date now = new Date();
+      Date expiry = new Date(now.getTime() + inviteExpiration);
+      return Jwts.builder()
+              .subject(String.valueOf(familyId))
+              .claim("type", "invite")
+              .issuedAt(now)
+              .expiration(expiry)
+              .signWith(key)
+              .compact();
+  }
+
+  public Long getFamilyIdFromInviteToken(String token) {
+      String subject = Jwts.parser()
+              .verifyWith(key)
+              .build()
+              .parseSignedClaims(token)
+              .getPayload()
+              .getSubject();
+      return Long.parseLong(subject);
+  }
+
+  
+  
+  
   
   }
   

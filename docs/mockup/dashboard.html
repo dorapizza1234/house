@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>집으로</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="screen dashboard-screen">
+
+      <!-- 상단 헤더 -->
+      <div class="top-bar">
+        <div class="top-bar-title">우리집 🏡</div>
+        <div class="top-bar-icon">🔔</div>
+      </div>
+
+      <!-- 메인 스크롤 영역 -->
+      <div class="scroll-area">
+
+        <!-- 내 상태 -->
+        <div class="status-card">
+          <div class="status-greeting">안녕하세요, 도라님</div>
+          <div class="status-question">지금 어디 계세요?</div>
+          <div class="toggle-group">
+            <button class="toggle-btn active">🏠 집</button>
+            <button class="toggle-btn">🚶 밖</button>
+          </div>
+        </div>
+
+        <!-- 가족 -->
+        <div class="section">
+          <div class="section-title">우리 가족 (4)</div>
+          <div class="members-row">
+            <div class="member-card">
+              <div class="member-avatar">👩</div>
+              <div class="member-name">엄마</div>
+              <div class="member-status home">집 · 방금</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">👨</div>
+              <div class="member-name">아빠</div>
+              <div class="member-status">밖 · 2시간 전</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">🧑</div>
+              <div class="member-name">오빠</div>
+              <div class="member-status home">집 · 30분 전</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">👧</div>
+              <div class="member-name">나</div>
+              <div class="member-status home">집 · 지금</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 공용 식물 -->
+        <div class="section">
+          <div class="section-title">우리집 식물</div>
+          <a href="plant.html" class="plant-card" style="text-decoration:none;">
+            <div class="plant-illust">🌱</div>
+            <div class="plant-info">
+              <div class="plant-name">하루팡</div>
+              <div class="plant-status">건강함 · 12일째</div>
+            </div>
+            <button class="plant-water-btn">💧 물주기</button>
+          </a>
+        </div>
+
+        <!-- 오늘 일정 -->
+        <div class="section">
+          <div class="section-title">오늘 (4월 29일)</div>
+          <div class="schedule-card">
+            <div class="schedule-icon">🎂</div>
+            <div class="schedule-text">엄마 생신</div>
+            <div class="schedule-time">하루 종일</div>
+          </div>
+          <div class="schedule-card">
+            <div class="schedule-icon">📅</div>
+            <div class="schedule-text">아빠 회식</div>
+            <div class="schedule-time">19:00</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 하단 탭바 -->
+      <div class="tab-bar">
+        <a href="dashboard.html" class="tab-item active">
+          <div class="tab-icon">🏠</div>
+          <div class="tab-label">홈</div>
+        </a>
+        <a href="calendar.html" class="tab-item">
+          <div class="tab-icon">📅</div>
+          <div class="tab-label">캘린더</div>
+        </a>
+        <a href="message.html" class="tab-item">
+          <div class="tab-icon">💬</div>
+          <div class="tab-label">메시지</div>
+        </a>
+        <a href="plant.html" class="tab-item">
+          <div class="tab-icon">🌱</div>
+          <div class="tab-label">식물</div>
+        </a>
+        <a href="mypage.html" class="tab-item">
+          <div class="tab-icon">👤</div>
+          <div class="tab-label">마이</div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
