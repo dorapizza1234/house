@@ -6,29 +6,29 @@ package com.example.house.domain;
   import java.time.LocalDateTime;
 
   @Entity
-  @Table(name = "가족멤버")
+  @Table(name = "family_member")
   @Getter
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   public class FamilyMember {
 
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
-      @Column(name = "가족멤버id")
+      @Column(name = "id")
       private Long id;
 
-      @Column(name = "가족id", nullable = false)
+      @Column(name = "family_id", nullable = false)
       private Long familyId;
 
-      @Column(name = "개인아이디", nullable = false)
+      @Column(name = "member_id", nullable = false)
       private Long memberId;
 
-      @Column(name = "역할", nullable = false)
+      @Column(name = "role", nullable = false)
       private String role;
 
-      @Column(name = "포인트", nullable = false)
+      @Column(name = "points", nullable = false)
       private int points;
 
-      @Column(name = "가입일")
+      @Column(name = "joined_at")
       private LocalDateTime joinedAt;
 
       @Builder

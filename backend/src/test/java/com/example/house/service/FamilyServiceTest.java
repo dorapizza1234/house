@@ -9,7 +9,8 @@ import com.example.house.dto.CreateInviteResponse;
 import com.example.house.repository.FamilyInviteRepository;
   import com.example.house.repository.FamilyMemberRepository;
   import com.example.house.repository.FamilyRepository;
-  import com.example.house.security.JwtUtil;
+import com.example.house.repository.MemberRepository;
+import com.example.house.security.JwtUtil;
   import org.junit.jupiter.api.DisplayName;
   import org.junit.jupiter.api.Test;
   import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,12 @@ import com.example.house.dto.AcceptInviteResponse;
 import com.example.house.domain.FamilyInvite;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import com.example.house.domain.FamilyMember;
+import com.example.house.domain.Member;
+import com.example.house.dto.DashboardMemberDto;
+import java.time.LocalDate;
+import java.util.List;
   @ExtendWith(MockitoExtension.class)
   class FamilyServiceTest {
 
@@ -37,7 +44,7 @@ import java.util.Optional;
       @Mock private FamilyMemberRepository familyMemberRepository;
       @Mock private FamilyInviteRepository familyInviteRepository;
       @Mock private JwtUtil jwtUtil;
-
+      @Mock private MemberRepository memberRepository;
       @InjectMocks private FamilyService familyService;
 
       @Test
@@ -216,4 +223,72 @@ import java.util.Optional;
 
           verify(familyMemberRepository, never()).save(any(FamilyMember.class));
       }
+  
+      @Test
+      void getDashboard_성공() {
+          // given
+          Long familyId = 1L;
+          Long aliceId = 10L;
+          Long bobId = 20L;
+
+          given(familyMemberRepository.existsByFamilyIdAndMemberId(familyId, aliceId))
+                  .willReturn(true);
+                                                                                                                                  FamilyMember alicefm = FamilyMember.builder()
+                  .familyId(familyId).memberId(aliceId).role("OWNER").build();
+          FamilyMember bobfm = FamilyMember.builder()
+                  .familyId(familyId).memberId(bobId).role("MEMBER").build();
+          given(familyMemberRepository.findByFamilyId(familyId))
+                  .willReturn(List.of(alicefm, bobfm));
+
+          Member alice = Member.builder()
+                  .email("alice@test.com").passwordHash("h").nickname("alice")
+                  .birthDate(LocalDate.of(1995, 3, 15)).build();
+          ReflectionTestUtils.setField(alice, "id", aliceId);
+
+          Member bob = Member.builder()
+                  .email("bob@test.com").passwordHash("h").nickname("bob")
+                  .birthDate(LocalDate.of(1996, 7, 20)).build();
+          ReflectionTestUtils.setField(bob, "id", bobId);
+
+          given(memberRepository.findAllById(List.of(aliceId, bobId)))
+                  .willReturn(List.of(alice, bob));
+
+          // when
+          List<DashboardMemberDto> result = familyService.getDashboard(familyId, aliceId);
+
+          // then
+          assertThat(result).hasSize(2);
+          assertThat(result).extracting(DashboardMemberDto::nickname)
+                  .containsExactlyInAnyOrder("alice", "bob");
+          assertThat(result).extracting(DashboardMemberDto::presenceStatus)
+                  .containsOnly("OUTSIDE");
+      }
+
+      @Test
+      void getDashboard_가족멤버아님() {
+          // given
+          Long familyId = 1L;
+          Long strangerId = 999L;
+
+          given(familyMemberRepository.existsByFamilyIdAndMemberId(familyId, strangerId))
+                  .willReturn(false);
+
+          // when & then
+          assertThatThrownBy(() -> familyService.getDashboard(familyId, strangerId))
+                  .isInstanceOf(IllegalArgumentException.class)
+                  .hasMessage("해당 가족의 멤버가 아닙니다");
+      }
+    	      
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

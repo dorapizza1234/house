@@ -7,30 +7,36 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
   @Entity
-  @Table(name = "개인")
+  @Table(name = "member")
   @Getter
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   public class Member {
 
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
-      @Column(name = "개인아이디")
+      @Column(name = "id")
       private Long id;
 
-      @Column(name = "이메일", nullable = false, unique = true)
+      @Column(name = "email", nullable = false, unique = true)
       private String email;
 
-      @Column(name = "비밀번호해시", nullable = false)
+      @Column(name = "password_hash", nullable = false)
       private String passwordHash;
 
-      @Column(name = "닉네임", nullable = false)
+      @Column(name = "nickname", nullable = false)
       private String nickname;
 
-      @Column(name = "가입시간")
+      @Column(name = "joined_at")
       private LocalDateTime joinedAt;
-      
-      @Column(name= "생년월일")
+
+      @Column(name = "birth_date")
       private LocalDate birthDate;
+
+      @Column(name = "presence_status", nullable = false)
+      private String presenceStatus;
+
+      @Column(name = "presence_updated_at", nullable = false)
+      private LocalDateTime presenceUpdatedAt;
       
       @Builder
       public Member(String email, String passwordHash, String nickname, LocalDate birthDate) {
@@ -39,5 +45,14 @@ import java.time.LocalDateTime;
           this.nickname = nickname;
           this.birthDate= birthDate;
           this.joinedAt = LocalDateTime.now();
+          this.presenceStatus = "OUTSIDE";
+          this.presenceUpdatedAt = LocalDateTime.now();
       }
+      
+      public void togglePresence() {
+          this.presenceStatus = "HOME".equals(this.presenceStatus) ? "OUTSIDE" : "HOME";
+          this.presenceUpdatedAt = LocalDateTime.now();
+      }
+      
+      
   }

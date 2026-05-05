@@ -8,12 +8,22 @@ import com.example.house.dto.AcceptInviteResponse;
 import com.example.house.dto.CreateFamilyRequest;
   import com.example.house.dto.CreateFamilyResponse;
 import com.example.house.dto.CreateInviteResponse;
+import com.example.house.dto.DashboardMemberDto;
 import com.example.house.repository.FamilyInviteRepository;
   import com.example.house.repository.FamilyMemberRepository;
   import com.example.house.repository.FamilyRepository;
-  import com.example.house.security.JwtUtil;
+import com.example.house.repository.MemberRepository;
+import com.example.house.security.JwtUtil;
   import lombok.RequiredArgsConstructor;
-  import org.springframework.stereotype.Service;
+  import com.example.house.domain.Member;
+  import com.example.house.domain.FamilyMember;
+  import com.example.house.dto.DashboardMemberDto;
+  import com.example.house.repository.MemberRepository;
+  import java.util.List;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
   import org.springframework.transaction.annotation.Transactional;
 
   @Service
@@ -24,7 +34,9 @@ import com.example.house.repository.FamilyInviteRepository;
       private final FamilyMemberRepository familyMemberRepository;
       private final FamilyInviteRepository familyInviteRepository;
       private final JwtUtil jwtUtil;
-
+      private final MemberRepository memberRepository;
+      
+      
       // 가족 생성 + 생성자를 OWNER로 자동 등록
       @Transactional
       public CreateFamilyResponse createFamily(CreateFamilyRequest request, Long creatorId) {
@@ -95,4 +107,30 @@ import com.example.house.repository.FamilyInviteRepository;
       }
       
       
+      @Transactional(readOnly = true)
+      public List<DashboardMemberDto> getDashboard(Long familyId, Long memberId) {
+          if (!familyMemberRepository.existsByFamilyIdAndMemberId(familyId, memberId)) {
+              throw new IllegalArgumentException("해당 가족의 멤버가 아닙니다");
+          }
+
+          List<FamilyMember> familyMembers = familyMemberRepository.findByFamilyId(familyId);
+                                                                                                                                  List<Long> memberIds = familyMembers.stream()
+                  .map(FamilyMember::getMemberId)
+                  .toList();
+
+          List<Member> members = memberRepository.findAllById(memberIds);
+
+          return members.stream()
+                  .map(m -> new DashboardMemberDto(
+                          m.getNickname(),
+                          m.getPresenceStatus(),
+                          m.getPresenceUpdatedAt()))
+                  .toList();
+      }
   }
+  
+  
+  
+  
+  
+  

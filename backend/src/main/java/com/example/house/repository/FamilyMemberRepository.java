@@ -10,4 +10,6 @@
       boolean existsByFamilyIdAndMemberId(Long familyId, Long memberId);
 
       List<FamilyMember> findByMemberId(Long memberId);
+      
+      List<FamilyMember> findByFamilyId(Long familyId);
   }

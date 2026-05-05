@@ -6,23 +6,23 @@ package com.example.house.domain;
   import java.time.LocalDateTime;
 
   @Entity
-  @Table(name = "그룹")
+  @Table(name = "family")
   @Getter
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   public class Family {
 
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
-      @Column(name = "가족id")
+      @Column(name = "id")
       private Long id;
 
-      @Column(name = "집안이름", nullable = false)
+      @Column(name = "name", nullable = false)
       private String name;
 
-      @Column(name = "생성자_id", nullable = false)
+      @Column(name = "creator_id", nullable = false)
       private Long creatorId;
 
-      @Column(name = "생성일시")
+      @Column(name = "created_at")
       private LocalDateTime createdAt;
 
       @Builder

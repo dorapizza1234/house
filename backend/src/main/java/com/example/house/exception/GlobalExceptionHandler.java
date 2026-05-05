@@ -30,10 +30,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
     
-    @ExceptionHandler(io.jsonwebtoken.JwtException.class)
-    public ResponseEntity<Map<String, String>> handleJwt(io.jsonwebtoken.JwtException e) {
+    @ExceptionHandler(io.jsonwebtoken.JwtException.class)                                                                   public ResponseEntity<Map<String, String>> handleJwt(io.jsonwebtoken.JwtException e) {
         Map<String, String> body = new HashMap<>();
         body.put("message", "유효하지 않은 토큰입니다");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
+    
+    
+    
+    
 }
