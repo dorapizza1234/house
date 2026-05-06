@@ -39,4 +39,8 @@ package com.example.house.domain;
           this.points = 0;
           this.joinedAt = LocalDateTime.now();
       }
+      
+      public void addPoints(int points) {
+          this.points += points;
+      }
   }
