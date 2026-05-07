@@ -19,7 +19,10 @@ import java.time.LocalDateTime;
 
       @Column(name = "email", nullable = false, unique = true)
       private String email;
-
+      
+      @Column(name="phone",nullable= false ,unique=true)
+      private String phone;
+      
       @Column(name = "password_hash", nullable = false)
       private String passwordHash;
 
@@ -39,11 +42,12 @@ import java.time.LocalDateTime;
       private LocalDateTime presenceUpdatedAt;
       
       @Builder
-      public Member(String email, String passwordHash, String nickname, LocalDate birthDate) {
+      public Member(String email, String passwordHash, String nickname, LocalDate birthDate, String phone) {
           this.email = email;
           this.passwordHash = passwordHash;
           this.nickname = nickname;
-          this.birthDate= birthDate;
+          this.birthDate = birthDate;
+          this.phone = phone;
           this.joinedAt = LocalDateTime.now();
           this.presenceStatus = "OUTSIDE";
           this.presenceUpdatedAt = LocalDateTime.now();
@@ -54,5 +58,8 @@ import java.time.LocalDateTime;
           this.presenceUpdatedAt = LocalDateTime.now();
       }
       
+      public void updatePassword(String newPasswordHash) {
+          this.passwordHash = newPasswordHash;
+      }
       
   }

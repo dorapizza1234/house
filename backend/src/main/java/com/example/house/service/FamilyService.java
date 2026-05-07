@@ -122,6 +122,7 @@ import org.springframework.stereotype.Service;
 
           return members.stream()
                   .map(m -> new DashboardMemberDto(
+                          m.getId(),
                           m.getNickname(),
                           m.getPresenceStatus(),
                           m.getPresenceUpdatedAt()))

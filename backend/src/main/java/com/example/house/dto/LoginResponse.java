@@ -2,5 +2,6 @@
 
   public record LoginResponse(
       String accessToken,
-      String refreshToken
+      String refreshToken,
+      Long familyId
   ) {}

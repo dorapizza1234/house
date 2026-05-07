@@ -17,11 +17,31 @@ spring:
         format_sql: true
     show-sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 server:
   port: 8080
 
 jwt:
-  secret: ${JWT_SECRET}                
+  secret: ${JWT_SECRET}
   access-expiration: 1800000
   refresh-expiration: 604800000
   invite-expiration: 86400000
+
+coolsms:
+  api-key: ${COOLSMS_API_KEY}
+  api-secret: ${COOLSMS_API_SECRET}
+  from-number: ${COOLSMS_FROM_NUMBER}
+
+app:
+  base-url: http://localhost:5173

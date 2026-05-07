@@ -10,4 +10,9 @@ package com.example.house.repository;
       Optional<Member> findByEmail(String email);
 
       boolean existsByEmail(String email);
+      
+      Optional<Member> findByPhone(String phone);
+
+      boolean existsByPhone(String phone); 
+      
   }

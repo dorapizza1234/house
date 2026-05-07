@@ -10,6 +10,7 @@ import io.jsonwebtoken.security.Keys;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Claims;
 import java.util.Date;
 
   @Component
@@ -98,7 +99,39 @@ import java.util.Date;
       return Long.parseLong(subject);
   }
 
-  
+  public String generatePhoneVerificationToken(String phone, String purpose) {
+      Date now = new Date();
+      Date expiry = new Date(now.getTime() + 10 * 60 * 1000L); // 10분
+
+      return Jwts.builder()
+              .subject(phone)
+              .claim("type", "phone_verification")
+              .claim("purpose", purpose)
+              .issuedAt(now)
+              .expiration(expiry)
+              .signWith(key)
+              .compact();
+  }
+
+  public PhoneVerificationClaim parsePhoneVerificationToken(String token) {
+      Claims claims = Jwts.parser()
+              .verifyWith(key)
+              .build()
+              .parseSignedClaims(token)
+              .getPayload();
+
+      String type = claims.get("type", String.class);
+      if (!"phone_verification".equals(type)) {
+          throw new IllegalArgumentException("유효하지 않은 토큰 타입입니다");
+      }
+
+      return new PhoneVerificationClaim(
+              claims.getSubject(),
+              claims.get("purpose", String.class)
+      );
+  }
+
+  public record PhoneVerificationClaim(String phone, String purpose) {}
   
   
   
