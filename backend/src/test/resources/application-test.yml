@@ -1,0 +1,41 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: test@example.com
+    password: dummy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  secret: testSecretKeyForIntegrationTestsThisMustBeLongEnoughForHS256AlgorithmAtLeast256Bits
+  access-expiration: 1800000
+  refresh-expiration: 604800000
+  invite-expiration: 86400000
+  phone-verification-expiration: 600000
+
+coolsms:
+  api-key: dummy
+  api-secret: dummy
+  from-number: "01012345678"
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.testcontainers: INFO

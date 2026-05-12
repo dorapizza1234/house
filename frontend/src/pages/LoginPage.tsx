@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../api/client'
+import mainImage from '../assets/main.png'
 
 function LoginPage() {
   const [email, setEmail] = useState('')
@@ -57,9 +58,14 @@ function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-sage-dark tracking-tight">우리집</h1>
           <p className="text-sm text-textsub mt-2">함께라서 더 따뜻한</p>
+          <img
+            src={mainImage}
+            alt="우리집 가족"
+            className="w-full max-w-xs mx-auto mt-6"
+          />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

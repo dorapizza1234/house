@@ -109,10 +109,13 @@ public class AuthService {
         int atIdx = email.indexOf('@');
         String local = email.substring(0, atIdx);
         String domain = email.substring(atIdx);
+        int len = local.length();
 
-        if (local.length() <= 2) {
-            return local.charAt(0) + "***" + domain;
+        if (len <= 4) {
+            // 짧은 경우: 첫 1자만 보이고 나머지는 별
+            return local.charAt(0) + "*".repeat(Math.max(1, len - 1)) + domain;
         }
-        return local.substring(0, 2) + "***" + domain;
+        // 일반: 앞 3자 + 별(len - 4)개 + 마지막 1자
+        return local.substring(0, 3) + "*".repeat(len - 4) + local.charAt(len - 1) + domain;
     }
 }

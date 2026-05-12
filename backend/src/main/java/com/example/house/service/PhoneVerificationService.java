@@ -1,84 +1,78 @@
 package com.example.house.service;
 
-  import com.example.house.domain.PhoneVerification;
   import com.example.house.repository.MemberRepository;
-  import com.example.house.repository.PhoneVerificationRepository;
   import com.example.house.security.JwtUtil;
   import lombok.RequiredArgsConstructor;
+  import org.springframework.data.redis.core.StringRedisTemplate;
   import org.springframework.stereotype.Service;
-  import org.springframework.transaction.annotation.Transactional;
 
   import java.security.SecureRandom;
-  import java.time.LocalDateTime;
+  import java.time.Duration;
 
   @Service
   @RequiredArgsConstructor
   public class PhoneVerificationService {
 
-      private static final int RATE_LIMIT_SECONDS = 60;
-      private final SecureRandom random = new SecureRandom();
+      private static final Duration CODE_TTL = Duration.ofMinutes(3);
+      private static final Duration COOLDOWN_TTL = Duration.ofSeconds(60);
+      private static final int MAX_ATTEMPTS = 5;
 
-      private final PhoneVerificationRepository verificationRepository;
+      private final SecureRandom random = new SecureRandom();
+      private final StringRedisTemplate redis;
       private final MemberRepository memberRepository;
       private final SmsService smsService;
       private final JwtUtil jwtUtil;
 
       /** 코드 발송 */
-      @Transactional
       public void sendCode(String phone, String purpose) {
           // 1. purpose별 사전 검증
           validatePurpose(phone, purpose);
 
-          // 2. Rate limit (1분 내 재발송 차단)
-          LocalDateTime since = LocalDateTime.now().minusSeconds(RATE_LIMIT_SECONDS);
-          if (verificationRepository.existsByPhoneAndCreatedAtAfter(phone, since)) {
+          // 2. Rate limit (1분 내 재발송 차단) — SETNX + EX (atomic)
+          Boolean firstTry = redis.opsForValue()
+                  .setIfAbsent(cooldownKey(phone), "1", COOLDOWN_TTL);
+          if (Boolean.FALSE.equals(firstTry)) {
               throw new IllegalArgumentException("잠시 후 다시 시도해 주세요");
           }
 
-          // 3. 같은 phone+purpose의 기존 미검증 코드 만료 처리
-          verificationRepository.invalidateActiveCodes(phone, purpose, LocalDateTime.now());
-
-          // 4. 6자리 코드 생성
+          // 3. 6자리 코드 생성
           String code = String.format("%06d", random.nextInt(1_000_000));
 
-          // 5. DB 저장
-          PhoneVerification verification = PhoneVerification.builder()
-                  .phone(phone)
-                  .code(code)
-                  .purpose(purpose)
-                  .build();
-          verificationRepository.save(verification);
+          // 4. Redis 저장 (기존 코드는 자동 덮어씀, TTL 3분)
+          redis.opsForValue().set(codeKey(phone, purpose), code, CODE_TTL);
+          // 새 코드 발급 → 시도 카운터 초기화
+          redis.delete(attemptsKey(phone, purpose));
 
-          // 6. SMS 발송
+          // 5. SMS 발송
           smsService.sendVerificationCode(phone, code);
       }
 
       /** 코드 검증 → 임시 토큰 발급 */
-      @Transactional
       public String verifyCode(String phone, String code, String purpose) {
-          PhoneVerification verification = verificationRepository
-                  .findTopByPhoneAndPurposeOrderByCreatedAtDesc(phone, purpose)
-                  .orElseThrow(() -> new IllegalArgumentException("인증번호 발송 이력이 없습니다"));
+          String storedCode = redis.opsForValue().get(codeKey(phone, purpose));
+          if (storedCode == null) {
+              throw new IllegalArgumentException("인증번호가 만료되었거나 발송 이력이 없습니다");
+          }
 
-          if (verification.isVerified()) {
-              throw new IllegalArgumentException("이미 사용된 인증번호입니다");
+          // 시도 횟수 atomic INCR
+          Long attempts = redis.opsForValue().increment(attemptsKey(phone, purpose));
+          // 첫 시도일 때만 TTL 부여 (코드와 동일하게 3분)
+          if (attempts != null && attempts == 1L) {
+              redis.expire(attemptsKey(phone, purpose), CODE_TTL);
           }
-          if (verification.isExpired()) {
-              throw new IllegalArgumentException("만료된 인증번호입니다");
-          }
-          if (verification.isMaxAttemptsReached()) {
+          if (attempts != null && attempts > MAX_ATTEMPTS) {
               throw new IllegalArgumentException("시도 횟수를 초과했습니다. 새 인증번호를 받아주세요");
           }
 
-          verification.incrementAttempts();
-
-          if (!verification.getCode().equals(code)) {
+          if (!storedCode.equals(code)) {
               throw new IllegalArgumentException("인증번호가 일치하지 않습니다");
           }
 
-          verification.markAsVerified();
+          // 검증 성공 → 키 정리 (재사용 방지)
+          redis.delete(codeKey(phone, purpose));
+          redis.delete(attemptsKey(phone, purpose));
 
-          // 검증 성공 → 10분 유효 임시 토큰 발급 (signup/findId에서 검증 증명용)
+          // 10분 유효 임시 토큰 발급
           return jwtUtil.generatePhoneVerificationToken(phone, purpose);
       }
 
@@ -96,5 +90,17 @@ package com.example.house.service;
               }
               default -> throw new IllegalArgumentException("유효하지 않은 요청입니다");
           }
+      }
+
+      private String codeKey(String phone, String purpose) {
+          return "phone:verify:" + purpose + ":" + phone;
+      }
+
+      private String attemptsKey(String phone, String purpose) {
+          return "phone:verify:attempts:" + purpose + ":" + phone;
+      }
+
+      private String cooldownKey(String phone) {
+          return "phone:cooldown:" + phone;
       }
   }

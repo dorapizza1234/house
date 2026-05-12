@@ -53,6 +53,10 @@ public class PasswordResetService {
         Member member = memberRepository.findById(resetToken.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다"));
 
+        if (passwordEncoder.matches(newPassword, member.getPasswordHash())) {
+            throw new IllegalArgumentException("기존 비밀번호와 동일합니다");
+        }
+
         member.updatePassword(passwordEncoder.encode(newPassword));
         resetToken.markAsUsed();
         // dirty checking으로 둘 다 자동 UPDATE
