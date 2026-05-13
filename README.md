@@ -10,7 +10,6 @@
 [![Cache](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)]()
 [![Deploy](https://img.shields.io/badge/deploy-live-success)]()
 
-**Live Demo**: [https://dorapizza.store](https://dorapizza.store)
 
 단독 풀스택 프로젝트 (Spring Boot + React 19) · 실서비스 운영 중
 
