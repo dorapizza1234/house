@@ -1,4 +1,4 @@
-# 우리집 (Jibeuro)
+# 우리집
 
 > 가족 커뮤니티 웹앱 — 떨어져 사는 가족과 캥거루족 모두를 위한 "존재와 마음 확인" 서비스
 
@@ -11,7 +11,6 @@
 [![Deploy](https://img.shields.io/badge/deploy-live-success)]()
 
 **Live Demo**: [https://dorapizza.store](https://dorapizza.store)
-**GitHub**: [dorapizza1234/house](https://github.com/dorapizza1234/house)
 
 단독 풀스택 프로젝트 (Spring Boot + React 19) · 실서비스 운영 중
 
@@ -31,7 +30,7 @@
 
 ## 컨셉
 
-아빠가 딸이 집에 있는지 모르겠다며 "미니소화기를 신발에 꽂아놓으라"고 한 일화에서 출발.
+가족이 서로 공유할 수 있는 어플이 없다는 문제에서 출발.
 GPS 추적이 아닌 **가족이 서로의 존재와 마음을 확인하는** 공간을 지향합니다.
 
 ### 타깃
