@@ -24,7 +24,7 @@ public class AuthService {
     private final FamilyMemberRepository familyMemberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-
+    private final RefreshTokenService refreshTokenService;
     // 인증 토큰 검증 + 이메일/번호 중복 + 해싱 + 저장
     @Transactional
     public SignupResponse signup(SignupRequest request) {
@@ -75,7 +75,7 @@ public class AuthService {
         }
 
         String accessToken = jwtUtil.generateAccessToken(member.getEmail());
-        String refreshToken = jwtUtil.generateRefreshToken(member.getEmail());
+        String refreshToken = refreshTokenService.issue(member.getEmail());
 
         Long familyId = familyMemberRepository.findByMemberId(member.getId())
                 .stream().findFirst()

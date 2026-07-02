@@ -12,6 +12,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Claims;
 import java.util.Date;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 
   @Component
   public class JwtUtil {
@@ -41,11 +43,12 @@ import java.util.Date;
               .subject(email)
               .issuedAt(now)
               .expiration(expiry)
+              .claim("type", "access")
               .signWith(key)
               .compact();
   }
 
-  public String generateRefreshToken(String email) {
+  public String generateRefreshToken(String email,String jti) {
       Date now = new Date();
       Date expiry = new Date(now.getTime() + refreshExpiration);
       return Jwts.builder()
@@ -53,6 +56,8 @@ import java.util.Date;
               .issuedAt(now)
               .expiration(expiry)
               .signWith(key)
+      		  .claim("type","refresh")
+      		  .id(jti)
               .compact();
   }
 
@@ -64,7 +69,14 @@ import java.util.Date;
               .getPayload()
               .getSubject();
   }
-
+  public String getTypeFromToken(String token) {
+	    return Jwts.parser()
+	            .verifyWith(key)
+	            .build()
+	            .parseSignedClaims(token)
+	            .getPayload()
+	            .get("type", String.class);
+	}
   public boolean validateToken(String token) {
       try {
           Jwts.parser()
@@ -133,7 +145,23 @@ import java.util.Date;
 
   public record PhoneVerificationClaim(String phone, String purpose) {}
   
+  public record RefreshClaim(String email, String jti) {}
   
+  public RefreshClaim parseRefreshToken(String token) {
+	    Claims claims = Jwts.parser()
+	            .verifyWith(key)
+	            .build()
+	            .parseSignedClaims(token)
+	            .getPayload();
+
+	    String type = claims.get("type", String.class);
+	    if (!"refresh".equals(type)) {
+	        throw new JwtException("리프레시 토큰이 아닙니다.");
+	    }
+
+	    return new RefreshClaim(claims.getSubject(), claims.getId());
+	}
+
   
   }
   

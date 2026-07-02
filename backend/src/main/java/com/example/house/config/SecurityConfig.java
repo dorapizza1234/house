@@ -16,7 +16,8 @@ package com.example.house.config;
 import com.example.house.filter.MdcLoggingFilter;
 import com.example.house.security.JwtAuthenticationFilter;
   import lombok.RequiredArgsConstructor;
-  
+  import org.springframework.http.HttpStatus;
+  import org.springframework.security.web.authentication.HttpStatusEntryPoint;
   @Configuration
   @RequiredArgsConstructor
   public class SecurityConfig {
@@ -40,6 +41,8 @@ import com.example.house.security.JwtAuthenticationFilter;
                   .requestMatchers("/api/auth/**","/error").permitAll()
                   .anyRequest().authenticated()
               )
+              .exceptionHandling(e -> e.authenticationEntryPoint(
+                      new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
               .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
               .addFilterAfter(mdcLoggingFilter, JwtAuthenticationFilter.class);
           return http.build();

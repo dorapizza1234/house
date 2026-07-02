@@ -37,6 +37,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'net.nurigo:sdk:4.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.anthropic:anthropic-java:2.47.1'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
   testImplementation 'org.testcontainers:junit-jupiter'
   testImplementation 'org.testcontainers:postgresql'

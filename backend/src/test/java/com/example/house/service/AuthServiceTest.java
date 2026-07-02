@@ -36,7 +36,7 @@ class AuthServiceTest {
     @Mock private FamilyMemberRepository familyMemberRepository;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private JwtUtil jwtUtil;
-
+    @Mock private RefreshTokenService refreshTokenService;
     @InjectMocks private AuthService authService;
 
     private SignupRequest signupRequest() {
@@ -133,7 +133,7 @@ class AuthServiceTest {
         given(memberRepository.findByEmail(request.email())).willReturn(Optional.of(member));
         given(passwordEncoder.matches(request.password(), member.getPasswordHash())).willReturn(true);
         given(jwtUtil.generateAccessToken(member.getEmail())).willReturn("access.token.value");
-        given(jwtUtil.generateRefreshToken(member.getEmail())).willReturn("refresh.token.value");
+        given(refreshTokenService.issue(member.getEmail())).willReturn("refresh.token.value");
         given(familyMemberRepository.findByMemberId(member.getId())).willReturn(Collections.emptyList());
 
         // when
@@ -144,7 +144,6 @@ class AuthServiceTest {
         assertThat(response.refreshToken()).isEqualTo("refresh.token.value");
         assertThat(response.familyId()).isNull();
         verify(jwtUtil).generateAccessToken("test@example.com");
-        verify(jwtUtil).generateRefreshToken("test@example.com");
     }
 
     @Test

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import apiClient from '../api/client'
+import apiClient, { getAccessToken, setAccessToken } from '../api/client'
 import BottomNav from '../components/BottomNav'
 
 type CheckInLog = {
@@ -41,7 +41,7 @@ function MyPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken')
+    const token = getAccessToken()
     if (!token) {
       navigate('/login')
       return
@@ -66,7 +66,11 @@ function MyPage() {
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await apiClient.post('/api/auth/logout')   // 서버: refresh 쿠키 만료 + Redis 삭제
+    } catch { /* 무시 */ }
+    setAccessToken(null)
     localStorage.clear()
     navigate('/login')
   }

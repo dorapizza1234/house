@@ -30,7 +30,7 @@ package com.example.house.security;
           if (authHeader != null && authHeader.startsWith("Bearer ")) {
               String token = authHeader.substring(7);
 
-              if (jwtUtil.validateToken(token)) {
+              if (jwtUtil.validateToken(token)&&"access".equals(jwtUtil.getTypeFromToken(token))) {
                   String email = jwtUtil.getEmailFromToken(token);
 
                   UsernamePasswordAuthenticationToken authentication =
